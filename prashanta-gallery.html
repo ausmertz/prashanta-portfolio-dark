@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gallery — Prashanta Maharjan Photography</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink:        #0d0c0b;
+    --ink-soft:   #1a1815;
+    --ink-mid:    #2c2926;
+    --surface:    #201e1b;
+    --gold:       #c8a96e;
+    --gold-light: #e2c990;
+    --gold-dim:   #8a7248;
+    --text-main:  #f0ece4;
+    --text-muted: #9a9088;
+    --text-dim:   #5c5650;
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans:  'DM Sans', system-ui, sans-serif;
+    --theme-transition: background 0.35s, color 0.35s, border-color 0.35s;
+  }
+
+  /* ── LIGHT THEME ── */
+  [data-theme="light"] {
+    --ink:        #faf8f5;
+    --ink-soft:   #f2ede6;
+    --ink-mid:    #e8e2d8;
+    --surface:    #f5f0e8;
+    --gold:       #a07830;
+    --gold-light: #c49840;
+    --gold-dim:   #8a6828;
+    --text-main:  #1a1612;
+    --text-muted: #6a6058;
+    --text-dim:   #a09888;
+  }
+
+  *, *::before, *::after { transition: var(--theme-transition); }
+  .g-item { transition: background 0.35s, color 0.35s, border-color 0.35s, opacity 0.5s, transform 0.5s; }
+
+  .theme-toggle {
+    background: none; border: 1px solid rgba(200,169,110,0.35);
+    width: 34px; height: 34px; border-radius: 50%;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    color: var(--gold); font-size: 0.85rem; transition: all 0.25s; flex-shrink: 0;
+  }
+  .theme-toggle:hover { background: var(--gold); color: var(--ink); }
+
+  [data-theme="light"] nav { background: rgba(250,248,245,0.96) !important; border-bottom-color: rgba(160,120,48,0.18) !important; }
+  [data-theme="light"] .filter-bar { background: rgba(250,248,245,0.97); border-bottom-color: rgba(160,120,48,0.15); }
+  [data-theme="light"] .filter-tab { border-color: rgba(160,120,48,0.25); }
+  [data-theme="light"] .view-btn { border-color: rgba(160,120,48,0.25); }
+  [data-theme="light"] .g-item { background: var(--ink-mid); }
+  [data-theme="light"] .gallery-list .g-item { border-color: rgba(160,120,48,0.15); }
+  [data-theme="light"] .lightbox { background: rgba(250,248,245,0.97); }
+  [data-theme="light"] .lightbox-img { border-color: rgba(160,120,48,0.2); background: var(--ink-mid); }
+  [data-theme="light"] .lightbox-close,
+  [data-theme="light"] .lightbox-prev,
+  [data-theme="light"] .lightbox-next { color: #6a6058; border-color: rgba(160,120,48,0.25); }
+  [data-theme="light"] footer { border-top-color: rgba(160,120,48,0.15); }
+  [data-theme="light"] .theme-toggle { border-color: rgba(160,120,48,0.35); }
+
+  html { scroll-behavior: smooth; }
+  body { background: var(--ink); color: var(--text-main); font-family: var(--sans); font-weight: 300; overflow-x: hidden; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.4rem 4rem;
+    background: rgba(13,12,11,0.94);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(200,169,110,0.15);
+  }
+  .nav-logo { font-family: var(--serif); font-weight: 400; font-size: 1.05rem; letter-spacing: 0.1em; color: var(--text-main); text-decoration: none; }
+  .nav-logo span { color: var(--gold); }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); text-decoration: none; transition: color 0.25s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--gold); }
+  .nav-cta { font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); border: 1px solid rgba(200,169,110,0.4); padding: 0.55rem 1.4rem; text-decoration: none; transition: all 0.25s; }
+  .nav-cta:hover { background: var(--gold); color: var(--ink); }
+
+  /* ── PAGE HEADER ── */
+  .page-header {
+    padding: 8rem 4rem 3rem;
+    max-width: 1200px; margin: 0 auto;
+    display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem;
+  }
+  .eyebrow { display: inline-flex; align-items: center; gap: 0.7rem; font-size: 0.63rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; }
+  .eyebrow::before { content: ''; width: 24px; height: 1px; background: var(--gold); }
+  .page-title { font-family: var(--serif); font-weight: 300; font-size: clamp(2.8rem, 5vw, 5rem); line-height: 1; color: var(--text-main); }
+  .page-title em { font-style: italic; color: var(--gold-light); }
+  .page-count { font-size: 0.78rem; color: var(--text-dim); margin-top: 0.8rem; letter-spacing: 0.08em; }
+  .page-count span { color: var(--gold); }
+
+  /* ── FILTER BAR ── */
+  .filter-bar {
+    position: sticky; top: 72px; z-index: 50;
+    background: rgba(13,12,11,0.96);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(200,169,110,0.12);
+    padding: 0 4rem;
+  }
+  .filter-bar-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.9rem 0; gap: 1rem;
+  }
+  .filter-tabs { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .filter-tab {
+    font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase;
+    padding: 0.4rem 1rem;
+    border: 1px solid rgba(200,169,110,0.18);
+    background: transparent; cursor: pointer; color: var(--text-dim);
+    transition: all 0.2s; font-family: var(--sans); font-weight: 300;
+  }
+  .filter-tab.active, .filter-tab:hover { background: var(--gold); color: var(--ink); border-color: var(--gold); }
+  .view-toggles { display: flex; gap: 0.4rem; }
+  .view-btn {
+    width: 34px; height: 34px;
+    border: 1px solid rgba(200,169,110,0.18);
+    background: transparent; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; color: var(--text-dim);
+  }
+  .view-btn.active, .view-btn:hover { background: var(--gold); border-color: var(--gold); color: var(--ink); }
+  .view-btn svg { width: 13px; height: 13px; fill: currentColor; }
+
+  /* ── GALLERY CONTAINER ── */
+  .gallery-wrapper { max-width: 1200px; margin: 0 auto; padding: 3rem 4rem 6rem; }
+
+  /* Masonry */
+  .gallery-masonry { columns: 3; column-gap: 3px; }
+  .gallery-masonry .g-item { break-inside: avoid; margin-bottom: 3px; display: block; }
+
+  /* Grid */
+  .gallery-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; }
+  .gallery-grid .g-item { aspect-ratio: 1/1; }
+
+  /* List */
+  .gallery-list { display: flex; flex-direction: column; gap: 2px; }
+  .gallery-list .g-item { display: grid; grid-template-columns: 260px 1fr; gap: 0; background: var(--surface); border: 1px solid rgba(200,169,110,0.08); transition: border-color 0.2s; }
+  .gallery-list .g-item:hover { border-color: rgba(200,169,110,0.25); }
+  .gallery-list .g-item .g-thumb { aspect-ratio: 4/3; }
+  .gallery-list .g-item .g-list-info { padding: 1.5rem 2rem; display: flex; flex-direction: column; justify-content: center; }
+  .gallery-list .g-item .g-list-title { font-family: var(--serif); font-size: 1.4rem; font-weight: 300; color: var(--text-main); margin-bottom: 0.4rem; }
+  .gallery-list .g-item .g-list-cat { font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.7rem; }
+  .gallery-list .g-item .g-list-desc { font-size: 0.83rem; line-height: 1.7; color: var(--text-muted); }
+
+  /* Shared item */
+  .g-item {
+    position: relative; overflow: hidden; cursor: pointer;
+    background: var(--ink-mid);
+    opacity: 0; transform: translateY(14px);
+    animation: itemIn 0.5s forwards;
+  }
+  .g-item.hidden { display: none; }
+  .g-thumb { width: 100%; height: 100%; overflow: hidden; }
+  .g-thumb svg { width: 100%; height: 100%; display: block; transition: transform 0.65s cubic-bezier(0.25,0.46,0.45,0.94); }
+  .g-item:hover .g-thumb svg { transform: scale(1.06); }
+  .g-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(13,12,11,0.9) 0%, rgba(13,12,11,0.05) 55%);
+    display: flex; align-items: flex-end; padding: 1.2rem;
+    opacity: 0; transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  .g-item:hover .g-overlay { opacity: 1; }
+  .g-overlay-cat { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); display: block; margin-bottom: 0.2rem; }
+  .g-overlay-title { font-family: var(--serif); font-size: 1rem; font-weight: 300; font-style: italic; color: var(--text-main); display: block; }
+
+  /* Empty state */
+  .empty-state { display: none; text-align: center; padding: 5rem 2rem; }
+  .empty-state.visible { display: block; }
+  .empty-state p { font-family: var(--serif); font-size: 1.5rem; font-weight: 300; font-style: italic; color: var(--text-dim); }
+
+  /* ── LIGHTBOX ── */
+  .lightbox { display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(13,12,11,0.98); align-items: center; justify-content: center; }
+  .lightbox.open { display: flex; }
+  .lightbox-close { position: absolute; top: 2rem; right: 2.5rem; font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); cursor: pointer; transition: color 0.2s; background: none; border: none; font-family: var(--sans); }
+  .lightbox-close:hover { color: var(--gold); }
+  .lightbox-prev, .lightbox-next { position: absolute; top: 50%; transform: translateY(-50%); background: none; border: 1px solid rgba(200,169,110,0.2); color: var(--text-muted); font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.7rem 1.1rem; cursor: pointer; font-family: var(--sans); transition: all 0.2s; }
+  .lightbox-prev:hover, .lightbox-next:hover { background: rgba(200,169,110,0.1); color: var(--gold); border-color: rgba(200,169,110,0.5); }
+  .lightbox-prev { left: 2rem; }
+  .lightbox-next { right: 2rem; }
+  .lightbox-body { display: flex; align-items: center; gap: 3rem; max-width: 90vw; max-height: 90vh; }
+  .lightbox-img { max-width: 65vw; max-height: 82vh; background: var(--ink-mid); overflow: hidden; border: 1px solid rgba(200,169,110,0.1); flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+  .lightbox-img svg { display: block; max-width: 65vw; max-height: 82vh; width: auto; height: auto; }
+  .lightbox-info { min-width: 200px; max-width: 230px; }
+  .lightbox-cat { font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.8rem; display: block; }
+  .lightbox-title { font-family: var(--serif); font-size: 1.8rem; font-weight: 300; font-style: italic; color: var(--text-main); line-height: 1.2; margin-bottom: 1rem; }
+  .lightbox-desc { font-size: 0.82rem; line-height: 1.8; color: var(--text-muted); margin-bottom: 1.5rem; }
+  .lightbox-counter { font-size: 0.65rem; letter-spacing: 0.15em; color: var(--text-dim); }
+
+  /* ── FOOTER ── */
+  footer { background: var(--ink-soft); border-top: 1px solid rgba(200,169,110,0.1); padding: 2.5rem 4rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem; }
+  .footer-logo { font-family: var(--serif); font-size: 1.1rem; font-weight: 300; color: var(--text-main); }
+  .footer-logo span { color: var(--gold); }
+  .footer-copy { font-size: 0.75rem; color: var(--text-dim); }
+  .footer-back { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); text-decoration: none; transition: color 0.2s; display: flex; align-items: center; gap: 0.4rem; }
+  .footer-back:hover { color: var(--gold); }
+  .footer-back::before { content: '←'; }
+
+  /* ── ANIMATIONS ── */
+  @keyframes itemIn { to { opacity: 1; transform: translateY(0); } }
+  .g-item:nth-child(1)  { animation-delay: 0.04s; }
+  .g-item:nth-child(2)  { animation-delay: 0.08s; }
+  .g-item:nth-child(3)  { animation-delay: 0.12s; }
+  .g-item:nth-child(4)  { animation-delay: 0.16s; }
+  .g-item:nth-child(5)  { animation-delay: 0.20s; }
+  .g-item:nth-child(6)  { animation-delay: 0.24s; }
+  .g-item:nth-child(7)  { animation-delay: 0.28s; }
+  .g-item:nth-child(8)  { animation-delay: 0.32s; }
+  .g-item:nth-child(9)  { animation-delay: 0.36s; }
+  .g-item:nth-child(10) { animation-delay: 0.40s; }
+  .g-item:nth-child(11) { animation-delay: 0.44s; }
+  .g-item:nth-child(12) { animation-delay: 0.48s; }
+  .g-item:nth-child(13) { animation-delay: 0.52s; }
+  .g-item:nth-child(14) { animation-delay: 0.56s; }
+  .g-item:nth-child(15) { animation-delay: 0.60s; }
+  .g-item:nth-child(16) { animation-delay: 0.64s; }
+  .g-item:nth-child(17) { animation-delay: 0.68s; }
+  .g-item:nth-child(18) { animation-delay: 0.72s; }
+
+  /* Mobile */
+  @media (max-width: 900px) {
+    nav { padding: 1.2rem 2rem; }
+    .nav-links { display: none; }
+    .page-header { padding: 7rem 2rem 2rem; flex-direction: column; align-items: flex-start; }
+    .filter-bar { padding: 0 2rem; top: 64px; }
+    .gallery-wrapper { padding: 2rem 2rem 4rem; }
+    .gallery-masonry { columns: 2; }
+    .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+    .gallery-list .g-item { grid-template-columns: 1fr; }
+    .gallery-list .g-item .g-thumb { aspect-ratio: 4/3; }
+    .lightbox-body { flex-direction: column; gap: 1rem; }
+    .lightbox-img { max-width: 90vw; }
+    .lightbox-img svg { max-width: 90vw; }
+    .lightbox-info { max-width: 100%; min-width: unset; }
+    .lightbox-prev { left: 0.5rem; }
+    .lightbox-next { right: 0.5rem; }
+    footer { padding: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="prashanta-maharjan.html" class="nav-logo">Prashanta <span>Maharjan</span></a>
+  <ul class="nav-links">
+    <li><a href="prashanta-maharjan.html#portfolio">Portfolio</a></li>
+    <li><a href="prashanta-gallery.html" class="active">Gallery</a></li>
+    <li><a href="prashanta-maharjan.html#about">About</a></li>
+    <li><a href="prashanta-maharjan.html#services">Services</a></li>
+  </ul>
+  <div style="display:flex;align-items:center;gap:1rem;">
+    <button class="theme-toggle" id="theme-toggle" title="Toggle light/dark mode">☀️</button>
+    <a href="prashanta-maharjan.html#contact" class="nav-cta">Book now</a>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div>
+    <p class="eyebrow">Full collection</p>
+    <h1 class="page-title">All <em>works</em></h1>
+    <p class="page-count"><span id="visible-count">18</span> photos · filtered by <span id="active-filter">All</span></p>
+  </div>
+</div>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <div class="filter-bar-inner">
+    <div class="filter-tabs">
+      <button class="filter-tab active" data-filter="all">All</button>
+      <button class="filter-tab" data-filter="weddings">Weddings</button>
+      <button class="filter-tab" data-filter="portraits">Portraits</button>
+      <button class="filter-tab" data-filter="events">Events</button>
+      <button class="filter-tab" data-filter="pre-wedding">Pre-wedding</button>
+      <button class="filter-tab" data-filter="details">Details</button>
+    </div>
+    <div class="view-toggles">
+      <button class="view-btn active" data-view="masonry" title="Masonry">
+        <svg viewBox="0 0 14 14"><rect x="0" y="0" width="6" height="8"/><rect x="8" y="0" width="6" height="5"/><rect x="0" y="10" width="6" height="4"/><rect x="8" y="7" width="6" height="7"/></svg>
+      </button>
+      <button class="view-btn" data-view="grid" title="Grid">
+        <svg viewBox="0 0 14 14"><rect x="0" y="0" width="6" height="6"/><rect x="8" y="0" width="6" height="6"/><rect x="0" y="8" width="6" height="6"/><rect x="8" y="8" width="6" height="6"/></svg>
+      </button>
+      <button class="view-btn" data-view="list" title="List">
+        <svg viewBox="0 0 14 14"><rect x="0" y="0" width="14" height="2"/><rect x="0" y="4" width="14" height="2"/><rect x="0" y="8" width="14" height="2"/><rect x="0" y="12" width="14" height="2"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- GALLERY -->
+<div class="gallery-wrapper">
+  <div class="gallery-masonry" id="gallery-container">
+
+    <!-- WEDDINGS -->
+    <div class="g-item" data-category="weddings" data-title="The vow exchange" data-desc="A quiet moment at the altar — Pashupatinath, Kathmandu. 2024.">
+      <div class="g-thumb"><svg viewBox="0 0 400 520" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%">
+        <rect width="400" height="520" fill="#1e1a16"/>
+        <path d="M0 350 Q200 300 400 350 L400 520 L0 520Z" fill="#1a1612" opacity="0.8"/>
+        <circle cx="155" cy="175" r="58" fill="#2a2218" opacity="0.55"/>
+        <circle cx="255" cy="178" r="52" fill="#2a2218" opacity="0.48"/>
+        <path d="M90 255 Q130 215 155 210 Q185 225 200 235 Q215 225 245 210 Q270 215 310 255 L310 310 L90 310Z" fill="#2a2218" opacity="0.5"/>
+        <path d="M185 280 Q200 305 215 280" stroke="#c8a96e" stroke-width="2.5" fill="none" opacity="0.45"/>
+        <circle cx="55" cy="60" r="26" fill="#c8a96e" opacity="0.1"/>
+        <circle cx="360" cy="440" r="18" fill="#c8a96e" opacity="0.08"/>
+        <path d="M340 20 Q380 60 350 100" stroke="#c8a96e" stroke-width="1.2" fill="none" opacity="0.18"/>
+      </svg></div>
+      <div class="g-overlay"><div><span class="g-overlay-cat">Weddings</span><span class="g-overlay-title">The vow exchange</span></div></div>
+    </div>
+
+    <div class="g-item" data-category="weddings" data-title="Reception golden hour" data-desc="First dance bathed in warm evening light. Dwarika's Hotel, 2024.">
+      <div class="g-thumb"><svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%">
+        <rect width="400" height="300" fill="#1c1814"/>
+        <path d="M0 200 Q200 155 400 200 L400 300 L0 300Z" fill="#181410" opacity="0.8"/>
+        <circle cx="160" cy="130" r="52" fill="#2a2218" opacity="0.55"/>
+        <circle cx="248" cy="134" r="46" fill="#2a2218" opacity="0.48"/>
+        <rect x="130" y="175" width="60" height="100" rx="3" fill="#261e14" opacity="0.5"/>
+        <rect x="210" y="172" width="55" height="103" rx="3" fill="#221c12" opacity="0.45"/>
+        <circle cx="50" cy="55" r="28" fill="#c8a96e" opacity="0.12"/>
+        <circle cx="360" cy="240" r="20" fill="#c8a96e" opacity="0.08"/>
+        <ellipse cx="200" cy="295" rx="140" ry="18" fill="#c8a96e" opacity="0.06"/>
+      </svg></div>
+      <div class="g-overlay"><div><span class="g-overlay-cat">Weddings</span><span class="g-overlay-title">Reception golden hour</span></div></div>
+    </div>
+
+    <div class="g-item" data-category="weddings" data-title="Sindoor ceremony" data-desc="The sacred sindoor moment — a tradition filled with quiet emotion.">
+      <div class="g-thumb"><svg viewBox="0 0 400 440" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%">
+        <rect width="400" height="440" fill="#1a1714"/>
+        <path d="M0 300 Q200 250 400 300 L400 440 L0 440Z" fill="#161412" opacity="0.8"/>
+        <circle cx="200" cy="155" r="60" fill="#2a2218" opacity="0.55"/>
+        <path d="M120 235 Q160 198 200 195 Q240 198 280 235 Q305 295 285 340 L115 340 Q95 295 120 235Z" fill="#2a2218" opacity="0.5"/>
+        <circle cx="200" cy="104" r="5" fill="#c8302a" opacity="0.75"/>
+        <line x1="195" y1="100" x2="200" y2="104" stroke="#c8302a" stroke-width="2" opacity="0.65"/>
+        <circle cx="60" cy="55" r="20" fill="#c8a96e" opacity="0.1"/>
+        <circle cx="355" cy="390" r="16" fill="#c8a96e" opacity="0.08"/>
+        <path d="M380 0 Q360 50 370 100" stroke="#c8a96e" stroke-width="1" fill="none" opacity="0.15"/>
+      </svg></div>
+      <div class="g-overlay"><div><span class="g-overlay-cat">Weddings</span><span class="g-overlay-title">Sindoor ceremony</span></div></div>
+    </div>
+
+    <div class="g-item" data-category="weddings" data-title="Family blessing" data-desc="Three generations gathered in blessing — a frame full of love.">
+      <div class="g-thumb"><svg viewBox="0 0 400 320" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%">
+        <rect width="400" height="320" fill="#1c1814"/>
+        <path d="M0 220 Q200 175 400 220 L400 320 L0 320Z" fill="#181410" opacity="0.8"/>
+        <circle cx="80"  cy="140" r="36" fill="#2a2218" opacity="0.6"/>
+        <circle cx="145" cy="135" r="40" fill="#2a2218" opacity="0.55"/>
+        <circle cx="220" cy="138" r="38" fill="#2a2218" opacity="0.55"/>
+        <circle cx="298" cy="136" r="34" fill="#2a2218" opacity="0.5"/>
+        <circle cx="352" cy="140" r="32" fill="#2a2218" opacity="0.48"/>
+        <circle cx="380" cy="60" r="22" fill="#c8a96e" opacity="0.1"/>
+        <circle cx="30"  cy="280" r="16" fill="#c8a96e" opacity="0.08"/>
+      </svg></div>
+      <div class="g-overlay"><div><span class="g-overlay-cat">Weddings</span><span class="g-overlay-title">Family blessing</span></div></div>
+    </div>
+
+    <div class="g-item" data-category="weddings" data-title="The walk down" data-desc="The bride walks through lantern-lit corridors at Hyatt Regency, Kathmandu.">
+      <div class="g-thumb"><svg viewBox="0 0 400 580" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%">
+        <rect width="400" height="580" fill="#1a1612"/>
+        <path d="M0 0 L400 0 L400 140 Q200 175 0 140Z" fill="#201c18" opacity="0.6"/>
+        <path d="M0 400 Q200 350 400 400 L400 580 L0 580Z" fill="#161412" opacity="0.7"/>
+        <circle cx="200" cy="200" r="55" fill="#2a2218" opacity="0.55"/>
+        <path d="M130 275 Q165 240 200 237 Q235 240 270 275 Q290 340 270 390 L130 390 Q110 340 130 275Z" fill="#2a2218" opacity="0.5"/>
+        <ellipse cx="60"  cy="100" rx="12" ry="20" fill="#c8a96e" opacity="0.3"/>
+        <ellipse cx="340" cy="120" rx="12" ry="20" fill="#c8a96e" opacity="0.28"/>
+        <ellipse cx="80"  cy="300" rx="10" ry="16" fill="#c8a96e" opacity="0.22"/>
+        <ellipse cx="320" cy="280" rx="10" ry="16" fill="#c8a96e" opacity="0.2"/>
+      </svg></div>
+      <div class="g-overlay"><div><span class="g-overlay-cat">Weddings</span><span class="g-overlay-title">The walk down</span></div></div>
+    </div>
+
+    <div class="g-item" data-category="weddings" data-title="Candid laughter" data-desc="Unscripted joy between the newlyweds during the reception.">
+      <div class="g-thumb"><svg viewBox="0 0 400 360" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%">
+        <rect width="400" height="360" fill="#1e1a16"/>
+        <path d="M0 240 Q200 200 400 240 L400 360 L0 360Z" fill="#1a1612" opacity="0.8"/>
+        <circle cx="155" cy="148" r="52" fill="#2a2218" opacity="0.55"/>
+        <circle cx="255" cy="145" r="48" fill="#2a2218" opacity="0.5"/>
+        <path d="M100 220 Q140 185 155 180 Q185 195 200 205 Q215 195 245 180 Q265 185 300 220 L300 270 L100 270Z" fill="#2a2218" opacity="0.45"/>
+        <circle cx="42" cy="42" r="20" fill="#c8a96e" opacity="0.1"/>
+        <circle cx="368" cy="315" r="18" fill="#c8a96e" opacity="0.08"/>
+        <path d="M360 10 Q390 50 370 90" stroke="#c8a96e" stroke-width="1" fill="none" opacity="0.15"/>
+      </svg></div>
+      <div class="g-overlay"><div><span class="g-overlay-cat">Weddings</span><span class="g-overlay-title">Candid laughter</span></div></div>
+    </div>
+
+    <!-- PORTRAITS -->
+    <div class="g-item" data-category="portraits" data-title="Bridal serenity" data-desc="A quiet moment of reflection before the ceremony. Natural window light.">
+      <div class="g-thumb"><svg viewBox="0 0 400 540" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%">
+        <rect width="400" height="540" fill="#1a1714"/>
+        <path d="M0 370 Q200 325 400 370 L400 540 L0 540Z" fill="#161412" opacity="0.8"/>
+        <circle cx="200" cy="170" r="65" fill="#2a2218" opacity="0.6"/>
+        <circle cx="200" cy="170" r="42" fill="#221c14" opacity="0.55"/>
+        <path d="M120 255 Q158 218 200 215 Q242 218 280 255 Q305 320 285 370 L115 370 Q95 320 120 255Z" fill="#2a2218" opacity="0.5"/>
+        <path d="M135 115 Q200 90 265 115 Q310 200 290 380 L110 380 Q90 200 135 115Z" fill="#fff" opacity="0.04"/>
+        <path d="M0 60 Q80 150 0 260" stroke="#e2c990" stroke-width="55" fill="none" opacity="0.06"/>
+        <circle cx="52" cy="58" r="24" fill="#c8a96e" opacity="0.1"/>
+      </svg></div>
+      <div class="g-overlay"><div><span class="g-overlay-cat">Portraits</span><span class="g-overlay-title">Bridal serenity</span></div></div>
+    </div>
+
+    <div class="g-item" data-category="portraits" data-title="Groom in light" data-desc="Soft morning light through sheer curtains — moments before the ceremony.">
+      <div class="g-thumb"><svg viewBox="0 0 400 460" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%">
+        <rect width="400" height="460" fill="#1c1814"/>
+        <path d="M0 310 Q200 265 400 310 L400 460 L0 460Z" fill="#181410" opacity="0.8"/>
+        <circle cx="200" cy="158" r="62" fill="#2a2218" opacity="0.58"/>
+        <path d="M118 240 Q158 205 200 202 Q242 205 282 240 Q308 303 288 348 L112 348 Q92 303 118 240Z" fill="#2a2218" opacity="0.52"/>
+        <rect x="178" y="345" width="44" height="80" rx="3" fill="#221c14" opacity="0.45"/>
+        <path d="M0 80 Q60 140 0 200" stroke="#e2c990" stroke-width="40" fill="none" opacity="0.08"/>
+        <circle cx="55" cy="55" r="22" fill="#c8a96e" opacity="0.1"/>
+      </svg></div>
+      <div class="g-overlay"><div><span class="g-overlay-cat">Portraits</span><span class="g-overlay-title">Groom in light</span></div></div>
+    </div>
+
+    <div class="g-item" data-category="portraits" data-title="Together, always" data-desc="A couple portrait at Namobuddha. Mountains in the distance.">
+      <div class="g-thumb"><svg viewBox="0 0 400 340" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%">
+        <rect width="400" height="340" fill="#1a1612"/>
+        <path d="M0 170 Q100 120 180 150 Q220 130 260 145 Q320 110 400 155 L400 340 L0 340Z" fill="#161210" opacity="0.7"/>
+        <circle cx="150" cy="145" r="50" fill="#2a2218" opacity="0.55"/>
+        <circle cx="252" cy="148" r="46" fill="#2a2218" opacity="0.48"/>
+        <path d="M92 222 Q130 188 150 185 Q178 198 200 208 Q222 198 252 185 Q272 188 308 222 L308 270 L92 270Z" fill="#2a2218" opacity="0.45"/>
+        <circle cx="48" cy="48" r="20" fill="#c8a96e" opacity="0.1"/>
+        <circle cx="360" cy="290" r="16" fill="#c8a96e" opacity="0.08"/>
+      </svg></div>
+      <div class="g-overlay"><div><span class="g-overlay-cat">Portraits</span><span class="g-overlay-title">Together, always</span></div></div>
+    </div>
+
+    <div class="g-item" data-category="portraits" data-title="The quiet between" data-desc="Stolen stillness amid the celebration — a portrait of intimacy.">
+      <div class="g-thumb"><svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%">
+        <rect width="400" height="500" fill="#1c1814"/>
+        <path d="M0 340 Q200 290 400 340 L400 500 L0 500Z" fill="#181410" opacity="0.8"/>
+        <circle cx="200" cy="165" r="63" fill="#2a2218" opacity="0.58"/>
+        <path d="M122 248 Q160 210 200 207 Q240 210 278 248 Q305 308 285 355 L115 355 Q95 308 122 248Z" fill="#2a2218" opacity="0.52"/>
+        <circle cx="320" cy="80" r="30" fill="#c8a96e" opacity="0.07"/>
+        <circle cx="80"  cy="380" r="22" fill="#c8a96e" opacity="0.07"/>
+        <circle cx="55"  cy="55"  r="22" fill="#c8a96e" opacity="0.1"/>
+      </svg></div>
+      <div class="g-overlay"><div><span class="g-overlay-cat">Portraits</span><span class="g-overlay-title">The quiet between</span></div></div>
+    </div>
+
+    <!-- EVENTS -->
+    <div class="g-item" data-category="events" data-title="A sea of celebration" data-desc="Reception hall at Hyatt Regency — 400 guests, one shared feeling.">
+      <div class="g-thumb"><svg viewBox="0 0 400 280" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%">
+        <rect width="400" height="280" fill="#141210"/>
+        <path d="M0 185 Q200 155 400 185 L400 280 L0 280Z" fill="#101010" opacity="0.9"/>
+        <circle cx="30"  cy="180" r="14" fill="#1e1a16" opacity="0.9"/><circle cx="65"  cy="175" r="16" fill="#1e1a16" opacity="0.9"/><circle cx="100" cy="180" r="14" fill="#1e1a16" opacity="0.9"/><circle cx="138" cy="173" r="17" fill="#1e1a16" opacity="0.9"/><circle cx="178" cy="177" r="15" fill="#1e1a16" opacity="0.9"/><circle cx="216" cy="172" r="18" fill="#1e1a16" opacity="0.9"/><circle cx="258" cy="178" r="15" fill="#1e1a16" opacity="0.9"/><circle cx="296" cy="174" r="16" fill="#1e1a16" opacity="0.9"/><circle cx="334" cy="179" r="14" fill="#1e1a16" opacity="0.9"/><circle cx="370" cy="175" r="15" fill="#1e1a16" opacity="0.9"/>
+        <rect x="150" y="60" width="100" height="90" rx="4" fill="#2a2218" opacity="0.6"/>
+        <circle cx="200" cy="85"  r="22" fill="#c8a96e" opacity="0.18"/>
+        <circle cx="370" cy="45"  r="20" fill="#c8a96e" opacity="0.12"/>
+      </svg></div>
+      <div class="g-overlay"><div><span class="g-overlay-cat">Events</span><span class="g-overlay-title">A sea of celebration</span></div></div>
+    </div>
+
+    <div class="g-item" data-category="events" data-title="Young Stunners live" data-desc="Concert coverage — capturing energy and motion in low light.">
+      <div class="g-thumb"><svg viewBox="0 0 400 480" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%">
+        <rect width="400" height="480" fill="#0e0c0a"/>
+        <path d="M200 0 L60 480 L340 480Z"  fill="#c8a96e" opacity="0.05"/>
+        <path d="M80  0 L0  380 L160 380Z"  fill="#c8a96e" opacity="0.03"/>
+        <path d="M320 0 L240 380 L400 380Z" fill="#c8a96e" opacity="0.03"/>
+        <circle cx="200" cy="130" r="42" fill="#2a2218" opacity="0.85"/>
+        <path d="M163 172 Q183 150 200 147 Q217 150 237 172 Q254 215 244 255 L156 255 Q146 215 163 172Z" fill="#2a2218" opacity="0.8"/>
+        <circle cx="60"  cy="420" r="18" fill="#1e1a16"/><circle cx="120" cy="428" r="16" fill="#1e1a16"/><circle cx="190" cy="422" r="18" fill="#1e1a16"/><circle cx="260" cy="420" r="20" fill="#1e1a16"/><circle cx="330" cy="424" r="17" fill="#1e1a16"/><circle cx="390" cy="420" r="15" fill="#1e1a16"/>
+        <circle cx="200" cy="50"  r="35" fill="#c8a96e" opacity="0.1"/>
+        <circle cx="200" cy="50"  r="18" fill="#e2c990" opacity="0.1"/>
+      </svg></div>
+      <div class="g-overlay"><div><span class="g-overlay-cat">Events</span><span class="g-overlay-title">Young Stunners live</span></div></div>
+    </div>
+
+    <div class="g-item" data-category="events" data-title="Cultural evening" data-desc="Dancers at a Newari cultural event — colour, motion, and tradition.">
+      <div class="g-thumb"><svg viewBox="0 0 400 480" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%">
+        <rect width="400" height="480" fill="#141210"/>
+        <path d="M0 320 Q200 275 400 320 L400 480 L0 480Z" fill="#101010" opacity="0.9"/>
+        <circle cx="130" cy="175" r="42" fill="#2a2218" opacity="0.7"/>
+        <circle cx="270" cy="178" r="40" fill="#2a2218" opacity="0.65"/>
+        <path d="M88 165 Q110 130 130 145" stroke="#3a2e1e" stroke-width="8" fill="none" stroke-linecap="round"/>
+        <path d="M172 145 Q155 110 130 125" stroke="#3a2e1e" stroke-width="8" fill="none" stroke-linecap="round"/>
+        <path d="M228 145 Q255 110 270 125" stroke="#3a2e1e" stroke-width="8" fill="none" stroke-linecap="round"/>
+        <path d="M312 165 Q290 130 270 145" stroke="#3a2e1e" stroke-width="8" fill="none" stroke-linecap="round"/>
+        <path d="M95 215 L130 330 L165 215Z"  fill="#c8a96e" opacity="0.25"/>
+        <path d="M235 215 L270 330 L305 215Z" fill="#c8a96e" opacity="0.22"/>
+        <circle cx="50" cy="50" r="22" fill="#c8a96e" opacity="0.12"/>
+      </svg></div>
+      <div class="g-overlay"><div><span class="g-overlay-cat">Events</span><span class="g-overlay-title">Cultural evening</span></div></div>
+    </div>
+
+    <div class="g-item" data-category="events" data-title="Tihar lights" data-desc="Kathmandu's Festival of Lights — lanterns lining Asan Tole.">
+      <div class="g-thumb"><svg viewBox="0 0 400 320" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%">
+        <rect width="400" height="320" fill="#0d0c0b"/>
+        <path d="M0 80 Q100 100 200 80 Q300 60 400 80"  stroke="#2a2218" stroke-width="1" fill="none"/>
+        <path d="M0 120 Q100 140 200 120 Q300 100 400 120" stroke="#2a2218" stroke-width="1" fill="none"/>
+        <path d="M0 160 Q100 180 200 160 Q300 140 400 160" stroke="#2a2218" stroke-width="1" fill="none"/>
+        <circle cx="40"  cy="82"  r="5" fill="#e2c990" opacity="0.9"/><circle cx="110" cy="96"  r="4" fill="#e2c990" opacity="0.85"/><circle cx="180" cy="82"  r="5" fill="#e2c990" opacity="0.9"/><circle cx="250" cy="70"  r="4" fill="#e2c990" opacity="0.85"/><circle cx="320" cy="76"  r="5" fill="#e2c990" opacity="0.9"/><circle cx="380" cy="82"  r="4" fill="#e2c990" opacity="0.85"/>
+        <circle cx="70"  cy="122" r="4" fill="#e2c990" opacity="0.8"/><circle cx="145" cy="136" r="4" fill="#e2c990" opacity="0.75"/><circle cx="220" cy="122" r="4" fill="#e2c990" opacity="0.8"/><circle cx="295" cy="112" r="4" fill="#e2c990" opacity="0.75"/><circle cx="365" cy="118" r="4" fill="#e2c990" opacity="0.8"/>
+        <path d="M0 220 Q100 200 200 210 Q300 220 400 205 L400 320 L0 320Z" fill="#1a1612" opacity="0.95"/>
+        <circle cx="80"  cy="216" r="12" fill="#2a2218"/><circle cx="180" cy="212" r="14" fill="#2a2218"/><circle cx="270" cy="214" r="12" fill="#2a2218"/><circle cx="340" cy="210" r="13" fill="#2a2218"/>
+      </svg></div>
+      <div class="g-overlay"><div><span class="g-overlay-cat">Events</span><span class="g-overlay-title">Tihar lights</span></div></div>
+    </div>
+
+    <!-- PRE-WEDDING -->
+    <div class="g-item" data-category="pre-wedding" data-title="Bhaktapur mornings" data-desc="Pre-wedding shoot through the ancient streets of Bhaktapur Durbar Square at dawn.">
+      <div class="g-thumb"><svg viewBox="0 0 400 440" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%">
+        <rect width="400" height="440" fill="#1c1814"/>
+        <path d="M140 200 L200 60 L260 200Z"  fill="#2a2218" opacity="0.55"/>
+        <path d="M120 220 L200 100 L280 220Z" fill="#221c14" opacity="0.45"/>
+        <rect x="155" y="220" width="90" height="180" rx="2" fill="#2a2218" opacity="0.5"/>
+        <circle cx="168" cy="328" r="22" fill="#3a2e1e" opacity="0.8"/>
+        <circle cx="232" cy="325" r="20" fill="#3a2e1e" opacity="0.75"/>
+        <circle cx="42" cy="42" r="20" fill="#c8a96e" opacity="0.1"/>
+        <path d="M360 10 Q390 50 370 90" stroke="#c8a96e" stroke-width="1" fill="none" opacity="0.15"/>
+        <path d="M0 380 Q200 340 400 380 L400 440 L0 440Z" fill="#161210" opacity="0.8"/>
+      </svg></div>
+      <div class="g-overlay"><div><span class="g-overlay-cat">Pre-wedding</span><span class="g-overlay-title">Bhaktapur mornings</span></div></div>
+    </div>
+
+    <div class="g-item" data-category="pre-wedding" data-title="Garden session" data-desc="Loose, romantic pre-wedding session near Godavari.">
+      <div class="g-thumb"><svg viewBox="0 0 400 360" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%">
+        <rect width="400" height="360" fill="#1a1714"/>
+        <path d="M0 240 Q200 190 400 240 L400 360 L0 360Z" fill="#161412" opacity="0.8"/>
+        <circle cx="60"  cy="185" r="48" fill="#222e1a" opacity="0.35"/>
+        <circle cx="340" cy="180" r="52" fill="#222e1a" opacity="0.3"/>
+        <circle cx="200" cy="160" r="35" fill="#222e1a" opacity="0.25"/>
+        <circle cx="175" cy="195" r="38" fill="#2a2218" opacity="0.58"/>
+        <circle cx="230" cy="198" r="35" fill="#2a2218" opacity="0.52"/>
+        <circle cx="90"  cy="162" r="8"  fill="#c8a96e" opacity="0.35"/>
+        <circle cx="130" cy="152" r="7"  fill="#c8a96e" opacity="0.3"/>
+        <circle cx="280" cy="158" r="8"  fill="#c8a96e" opacity="0.32"/>
+        <circle cx="320" cy="165" r="6"  fill="#c8a96e" opacity="0.28"/>
+      </svg></div>
+      <div class="g-overlay"><div><span class="g-overlay-cat">Pre-wedding</span><span class="g-overlay-title">Garden session</span></div></div>
+    </div>
+
+    <!-- DETAILS -->
+    <div class="g-item" data-category="details" data-title="The rings" data-desc="A macro study of the wedding bands resting on draped silk.">
+      <div class="g-thumb"><svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%">
+        <rect width="400" height="300" fill="#1a1714"/>
+        <path d="M0 100 Q100 120 200 100 Q300 80 400 100 L400 300 L0 300Z" fill="#161412" opacity="0.7"/>
+        <path d="M0 140 Q100 155 200 140 Q300 125 400 140 L400 300 L0 300Z" fill="#121010" opacity="0.5"/>
+        <circle cx="175" cy="170" r="40" fill="none" stroke="#2a2218" stroke-width="14" opacity="0.9"/>
+        <circle cx="175" cy="170" r="40" fill="none" stroke="#c8a96e" stroke-width="2" opacity="0.5"/>
+        <circle cx="225" cy="170" r="35" fill="none" stroke="#2a2218" stroke-width="12" opacity="0.9"/>
+        <circle cx="225" cy="170" r="35" fill="none" stroke="#c8a96e" stroke-width="2" opacity="0.45"/>
+        <circle cx="175" cy="132" r="5"  fill="#fff" opacity="0.6"/>
+        <circle cx="225" cy="137" r="4"  fill="#e2c990" opacity="0.7"/>
+      </svg></div>
+      <div class="g-overlay"><div><span class="g-overlay-cat">Details</span><span class="g-overlay-title">The rings</span></div></div>
+    </div>
+
+    <div class="g-item" data-category="details" data-title="Marigold & roses" data-desc="Hand-curated marigold and rose arrangement — the scent of every Nepali wedding.">
+      <div class="g-thumb"><svg viewBox="0 0 400 380" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%">
+        <rect width="400" height="380" fill="#1c1814"/>
+        <circle cx="200" cy="200" r="100" fill="#221c14" opacity="0.45"/>
+        <circle cx="200" cy="130" r="28" fill="#8a5a18" opacity="0.5"/>
+        <circle cx="250" cy="155" r="24" fill="#8a5a18" opacity="0.45"/>
+        <circle cx="265" cy="210" r="26" fill="#c8a96e" opacity="0.4"/>
+        <circle cx="235" cy="255" r="22" fill="#c8a96e" opacity="0.38"/>
+        <circle cx="185" cy="265" r="24" fill="#8a5a18" opacity="0.42"/>
+        <circle cx="145" cy="240" r="26" fill="#c8a96e" opacity="0.4"/>
+        <circle cx="135" cy="195" r="22" fill="#8a5a18" opacity="0.38"/>
+        <circle cx="155" cy="148" r="24" fill="#c8a96e" opacity="0.42"/>
+        <circle cx="200" cy="200" r="22" fill="#7a4e14" opacity="0.55"/>
+        <path d="M200 280 Q180 340 200 380" stroke="#3a4a28" stroke-width="6" fill="none" opacity="0.5"/>
+        <path d="M200 280 Q155 320 140 370" stroke="#3a4a28" stroke-width="5" fill="none" opacity="0.45"/>
+        <path d="M200 280 Q245 325 255 375" stroke="#3a4a28" stroke-width="5" fill="none" opacity="0.45"/>
+      </svg></div>
+      <div class="g-overlay"><div><span class="g-overlay-cat">Details</span><span class="g-overlay-title">Marigold & roses</span></div></div>
+    </div>
+
+  </div><!-- end gallery-container -->
+  <div class="empty-state" id="empty-state"><p>No photos in this category yet.</p></div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Prashanta <span>Maharjan</span></div>
+  <p class="footer-copy">© 2025 Prashanta Maharjan Photography. All rights reserved.</p>
+  <a href="prashanta-maharjan.html" class="footer-back">Back to main site</a>
+</footer>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" onclick="closeLightbox()">Close ✕</button>
+  <button class="lightbox-prev" onclick="shiftLightbox(-1)">← Prev</button>
+  <button class="lightbox-next" onclick="shiftLightbox(1)">Next →</button>
+  <div class="lightbox-body">
+    <div class="lightbox-img" id="lb-img"></div>
+    <div class="lightbox-info">
+      <span class="lightbox-cat"  id="lb-cat"></span>
+      <h2 class="lightbox-title"  id="lb-title"></h2>
+      <p class="lightbox-desc"    id="lb-desc"></p>
+      <p class="lightbox-counter" id="lb-counter"></p>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* VIEW SWITCHER */
+  const container = document.getElementById('gallery-container');
+  document.querySelectorAll('.view-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      const v = this.dataset.view;
+      container.className = v === 'masonry' ? 'gallery-masonry' : v === 'grid' ? 'gallery-grid' : 'gallery-list';
+    });
+  });
+
+  /* FILTER */
+  function updateCount() {
+    const visible = [...document.querySelectorAll('.g-item')].filter(i => !i.classList.contains('hidden'));
+    document.getElementById('visible-count').textContent = visible.length;
+    document.getElementById('active-filter').textContent = document.querySelector('.filter-tab.active').textContent.trim();
+    document.getElementById('empty-state').classList.toggle('visible', visible.length === 0);
+  }
+  document.querySelectorAll('.filter-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+      const sel = this.dataset.filter;
+      document.querySelectorAll('.g-item').forEach(item => {
+        item.classList.toggle('hidden', sel !== 'all' && item.dataset.category !== sel);
+      });
+      updateCount();
+    });
+  });
+  updateCount();
+
+  /* LIGHTBOX */
+  let currentIndex = 0;
+  function getVisible() { return [...document.querySelectorAll('.g-item')].filter(i => !i.classList.contains('hidden')); }
+  function openLightbox(el) {
+    currentIndex = getVisible().indexOf(el);
+    renderLightbox(currentIndex);
+    document.getElementById('lightbox').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function renderLightbox(idx) {
+    const items = getVisible(); if (!items[idx]) return;
+    const item = items[idx];
+    const svg = item.querySelector('svg').cloneNode(true);
+    svg.removeAttribute('style');
+    svg.style.cssText = 'display:block;max-width:65vw;max-height:82vh;width:auto;height:auto;';
+    document.getElementById('lb-img').innerHTML = '';
+    document.getElementById('lb-img').appendChild(svg);
+    const cat = item.dataset.category;
+    document.getElementById('lb-cat').textContent   = cat.charAt(0).toUpperCase() + cat.slice(1);
+    document.getElementById('lb-title').textContent = item.dataset.title;
+    document.getElementById('lb-desc').textContent  = item.dataset.desc;
+    document.getElementById('lb-counter').textContent = (idx + 1) + ' / ' + items.length;
+  }
+  function shiftLightbox(dir) { const items = getVisible(); currentIndex = (currentIndex + dir + items.length) % items.length; renderLightbox(currentIndex); }
+  function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); document.body.style.overflow = ''; }
+  document.getElementById('lightbox').addEventListener('click', e => { if (e.target === document.getElementById('lightbox')) closeLightbox(); });
+  document.addEventListener('keydown', e => { if (!document.getElementById('lightbox').classList.contains('open')) return; if (e.key === 'ArrowRight') shiftLightbox(1); if (e.key === 'ArrowLeft') shiftLightbox(-1); if (e.key === 'Escape') closeLightbox(); });
+  document.querySelectorAll('.g-item').forEach(item => item.addEventListener('click', function() { openLightbox(this); }));
+
+  // Theme toggle — synced with main site via localStorage
+  const root = document.documentElement;
+  const toggleBtn = document.getElementById('theme-toggle');
+  const saved = localStorage.getItem('pm-theme') || 'dark';
+  root.setAttribute('data-theme', saved);
+  toggleBtn.textContent = saved === 'dark' ? '☀️' : '🌙';
+
+  toggleBtn.addEventListener('click', () => {
+    const current = root.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    toggleBtn.textContent = next === 'dark' ? '☀️' : '🌙';
+    localStorage.setItem('pm-theme', next);
+  });
+</script>
+</body>
+</html>
